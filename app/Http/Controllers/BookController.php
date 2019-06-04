@@ -3,7 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Models\Book;
+use App\EbookConvert;
+use App\EbookMeta;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Carbon;
 
 class BookController extends Controller
 {
@@ -14,7 +19,8 @@ class BookController extends Controller
      */
     public function index()
     {
-        //
+        $books = Auth::user()->books()->paginate(10);
+        return view('books.index', compact('books'));
     }
 
     /**
@@ -24,7 +30,7 @@ class BookController extends Controller
      */
     public function create()
     {
-        //
+        return view('books.create');
     }
 
     /**
@@ -35,7 +41,25 @@ class BookController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'ebook' => 'required|max:25600|file|ebooktypes'
+        ]);
+
+        $ebookFile = $request->ebook;
+        $book = Auth::user()->books()->create([]);
+        $book->formats = [ $ebookFile->getClientOriginalExtension() ];
+        $filename = $book->id.".".$ebookFile->getClientOriginalExtension();
+        $bookPath = storage_path('app/ebooks')."/".$filename;
+        $ebookFile->storeAs('ebooks', $filename);
+        $data = EbookMeta::read($bookPath, $book->id);
+        if(array_key_exists('pubdate', $data))
+            $data['pubdate'] = Carbon::createFromFormat('Y-m-d\TH:i:sP', $data['pubdate'])->format('Y-m-d H:i:s');
+        if(array_key_exists('comments', $data))
+            $data['comments'] = utf8_decode($data['comments']);
+        $book->fill($data);
+        $book->save();
+
+        return redirect()->route('books.index');
     }
 
     /**
@@ -44,9 +68,13 @@ class BookController extends Controller
      * @param  \App\Models\Book  $book
      * @return \Illuminate\Http\Response
      */
-    public function show(Book $book)
+    public function show(Request $request, Book $book)
     {
-        //
+        if($request->get('download'))
+        {
+            return Storage::download('ebooks/'.$book->id.'.'.$request->get('download'), $book->title.'.'.$request->get('download'));
+        }
+        return view('books.show', compact('book'));
     }
 
     /**

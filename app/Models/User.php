@@ -39,6 +39,11 @@ class User extends Authenticatable
         'is_admin' => 'boolean'
     ];
 
+    public function getIsAdminAttribute()
+    {
+        return $this->attributes['is_admin'];
+    }
+
     public function books()
     {
         return $this->hasMany('App\Models\Book', 'user_id', 'id');

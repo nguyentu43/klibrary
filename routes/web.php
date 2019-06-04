@@ -18,3 +18,9 @@ Route::get('/', function () {
 Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
+
+Route::resource('/books', 'BookController');
+Route::resource('/collections', 'CollectionController');
+Route::resource('/devices', 'DeviceController');
+Route::resource('/users', 'UserController');
+

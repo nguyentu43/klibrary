@@ -11,7 +11,9 @@ class Book extends Model
 
     protected $guarded = [];
     protected $casts = [
-        'formats' => 'array'
+        'formats' => 'array',
+        'cover' => 'boolean',
+        'pubdate' => 'datetime:Y-m-d H:i:s'
     ];
 
     public function collections()

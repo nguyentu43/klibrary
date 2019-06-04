@@ -12,7 +12,7 @@ $factory->define(Book::class, function (Faker $faker) {
         'title' => $faker->sentence(),
         'authors' => $faker->name(),
         'comments' => $faker->paragraph(),
-        'isbn' => $faker->isbn10,
+        'identifier' => $faker->isbn10,
         'tags' => $faker->word,
         'publisher' => $faker->company,
         'languages' => $faker->languageCode,
@@ -23,7 +23,7 @@ $factory->define(Book::class, function (Faker $faker) {
 
 $factory->afterCreating(Book::class, function($book, $faker){
     $id = $book->id;
-    Storage::put($id.'.docx', 'DEMO');
+    Storage::put("ebooks/$id.docx", 'DEMO');
     $book->formats = [ [ 'type' => 'docx', 'size' => 4 ] ];
     $book->save();
 });
