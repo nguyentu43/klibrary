@@ -32,6 +32,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::patch('/profile', 'ProfileController@update')->name('profile.update');
 
     Route::get('/jobs', 'JobController@index')->name('jobs.index');
+    Route::delete('/jobs/{job}', 'JobController@destroy')->name('jobs.destroy');
 });
 
 

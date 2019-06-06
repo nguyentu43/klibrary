@@ -20,18 +20,20 @@ class ConvertFormat implements ShouldQueue
 
     protected $book;
     protected $format;
+    protected $profile;
 
     /**
      * Create a new job instance.
      *
      * @return void
      */
-    public function __construct(Book $book, $format)
+    public function __construct(Book $book, $format, $profile)
     {
         $this->prepareStatus();
         $this->book = $book;
+        $this->profile = $profile;
         $this->format = $format;
-        $this->setInput([__('app.job.convert', ['format' => $data['format'], 'title' => $book->title]), Auth::user()->id]);
+        $this->setInput([__('app.job.convert', ['format' => $format, 'title' => $book->title]), Auth::user()->id]);
     }
 
     /**
@@ -42,7 +44,7 @@ class ConvertFormat implements ShouldQueue
     public function handle()
     {
         $book = $this->book;
-        EbookConvert::convert($book->id, $book->formats[0], $this->format);
+        EbookConvert::convert($book->id, $book->formats[0], $this->format, $this->profile);
         $formats = $book->formats;
         array_push($formats, $this->format);
         $book->formats = $formats;

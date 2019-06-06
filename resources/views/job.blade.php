@@ -12,6 +12,7 @@
                             <th>@lang('app.job.status')</th>
                             <th>@lang('app.job.started_at')</th>
                             <th>@lang('app.job.finished_at')</th>
+                            <th>@lang('app.job.delete')</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -19,9 +20,20 @@
                         <tr>
                             <td>{{ $loop->index }}</td>
                             <td>{{ $job->input[0] }}</td>
-                            <td>{{ $job->status }}</td>
+                            <td>
+                                {{ $job->status }}
+                            </td>
                             <td>{{ $job->started_at }}</td>
                             <td>{{ $job->finished_at }}</td>
+                            <td>
+                                @if(in_array( $job->status, ['failed', 'finished']))
+                                <form method="post" action="{{ route('jobs.destroy', compact('job')) }}">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button class="btn btn-danger btn-sm btnDelete" type="submit">@lang('app.job.delete')</button>
+                                </form>
+                                @endif
+                            </td>
                         </tr>
                         @endforeach
                     </tbody>

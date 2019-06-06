@@ -24,7 +24,7 @@
                     <div class="col-sm-10">
                         <select id="typesDropdown" name="type" required class="form-control @error('type') is-invalid  @enderror">
                             @foreach($supportDevices as $key => $value)
-                                <option @if($key === $device->type) selected @endif data-img-src="{{ asset('devices/'.$key.'.jpg') }}" value="{{ $key }}"> {{ $value }} </option>
+                                <option @if($key === $device->type) selected @endif data-img-src="{{ asset('img/kindle/'.$key.'.jpg') }}" value="{{ $key }}"> {{ $value }} </option>
                             @endforeach
                         </select>
                         @error('type')

@@ -115,7 +115,11 @@ return [
         'started_at' => 'Started At',
         'finished_at' => 'Finished At',
         'send_to_kindle' => "Send :format Format Book ':title' To Kindle :email",
-        'convert' => "Convert :format Format Book ':title'"
+        'convert' => "Convert :format Format Book ':title'",
+        'delete' => 'Delete',
+        'messages' => [
+            'delete' => 'Job :job deleted'
+        ]
     ],
     'empty' => 'Click + to add item'
 ];

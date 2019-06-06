@@ -25,4 +25,13 @@ class JobController extends Controller
 
         return view('job', compact('jobs'));
     }
+
+    public function destroy(JobStatus $job)
+    {
+        $user = Auth::user();
+        if(!$user->isAdmin &&$job->input[1] === $user->id)
+            return abort(401);
+        if($job->delete())
+            return redirect()->route('jobs.index')->with('message', __('app.job.messages.delete', ['job' => $job->input[0]]));
+    }
 }

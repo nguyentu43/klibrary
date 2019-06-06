@@ -171,7 +171,9 @@ class BookController extends Controller
     {
         if($request->has('format'))
         {
-            ConvertFormat::dispatch($book, $request->get('format'));
+            $device = Auth::user()->devices()->where('default', 1)->first();
+            $profile = $device ? $device->type: 'default';
+            ConvertFormat::dispatch($book, $request->get('format'), $profile);
             return redirect()->route('books.show', ['book' => $book])->with('message', __('app.book.messages.convert'));
         }
         return redirect()->route('books.show', ['book' => $book])->with('formatConvertError', __('app.book.error.convert', [ 'formats' => implode(', ', EbookConvert::$supportTypes)]));

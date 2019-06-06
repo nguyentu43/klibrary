@@ -39,7 +39,7 @@ class DeviceController extends Controller
     public function store(DeviceRequest $request)
     {
         $device = Auth::user()->devices()->create($request->all());
-        return redirect()->route('devices.index')->with('message', __('app.device.message.add', ['device' => $device->name]));
+        return redirect()->route('devices.index')->with('message', __('app.device.messages.add', ['device' => $device->name]));
     }
 
     /**
@@ -73,7 +73,7 @@ class DeviceController extends Controller
         }
 
         if($device->update($data))
-            return redirect()->route('devices.index', compact('device'))->with('message', __('app.device.message.update', ['device' => $device->name]));
+            return redirect()->route('devices.index', compact('device'))->with('message', __('app.device.messages.update', ['device' => $device->name]));
     }
 
     /**
@@ -85,6 +85,6 @@ class DeviceController extends Controller
     public function destroy(Device $device)
     {
         if($device->delete())
-            return redirect()->route('devices.index')->with('message', __('app.device.message.delete', ['device' => $device->name]));
+            return redirect()->route('devices.index')->with('message', __('app.device.messages.delete', ['device' => $device->name]));
     }
 }

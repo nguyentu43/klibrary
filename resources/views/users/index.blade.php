@@ -22,11 +22,11 @@
                             <td>{{ $user->email }}</td>
                             <td>{{ $user->isAdmin ? 'x' : 'o' }}</td>
                             <td>
-                                <a class="btn btn-success" href="{{ route('users.edit', compact('user')) }}" >@lang('app.user.edit')</a>
+                                <a class="btn btn-success btn-sm" href="{{ route('users.edit', compact('user')) }}" >@lang('app.user.edit')</a>
                                 <form method="post" class="d-inline" action="{{ route('users.destroy', compact('user')) }}">
                                     @csrf
                                     @method("DELETE")
-                                    <button class="btn btn-danger btnDelete" href="{{ route('users.destroy', compact('user')) }}">@lang('app.user.delete')</a>
+                                    <button class="btn btn-danger btn-sm btnDelete" href="{{ route('users.destroy', compact('user')) }}">@lang('app.user.delete')</a>
                                 </form>
                             </td>
                         </tr>
