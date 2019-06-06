@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Device;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
+use App\Http\Requests\DeviceRequest;
 
 class DeviceController extends Controller
 {
@@ -14,7 +16,8 @@ class DeviceController extends Controller
      */
     public function index()
     {
-        //
+        $devices = Auth::user()->devices()->get();
+        return view('devices.index', compact('devices'));
     }
 
     /**
@@ -24,7 +27,7 @@ class DeviceController extends Controller
      */
     public function create()
     {
-        //
+        return view('devices.create');
     }
 
     /**
@@ -33,20 +36,10 @@ class DeviceController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(DeviceRequest $request)
     {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\Device  $device
-     * @return \Illuminate\Http\Response
-     */
-    public function show(Device $device)
-    {
-        //
+        $device = Auth::user()->devices()->create($request->all());
+        return redirect()->route('devices.index')->with('message', __('app.device.message.add', ['device' => $device->name]));
     }
 
     /**
@@ -57,7 +50,7 @@ class DeviceController extends Controller
      */
     public function edit(Device $device)
     {
-        //
+        return view('devices.edit', compact('device'));
     }
 
     /**
@@ -67,9 +60,20 @@ class DeviceController extends Controller
      * @param  \App\Models\Device  $device
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Device $device)
+    public function update(DeviceRequest $request, Device $device)
     {
-        //
+        $data = $request->all();
+        if(!empty($data['default']))
+        {
+            Auth::user()->devices()->update([ 'default' => false ]);
+            $data['default'] = true;
+        }
+        else {
+            $data['default'] = false;
+        }
+
+        if($device->update($data))
+            return redirect()->route('devices.index', compact('device'))->with('message', __('app.device.message.update', ['device' => $device->name]));
     }
 
     /**
@@ -80,6 +84,7 @@ class DeviceController extends Controller
      */
     public function destroy(Device $device)
     {
-        //
+        if($device->delete())
+            return redirect()->route('devices.index')->with('message', __('app.device.message.delete', ['device' => $device->name]));
     }
 }

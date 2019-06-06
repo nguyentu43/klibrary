@@ -19,8 +19,19 @@ Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
 
-Route::resource('/books', 'BookController');
-Route::resource('/collections', 'CollectionController');
-Route::resource('/devices', 'DeviceController');
-Route::resource('/users', 'UserController');
+Route::group(['middleware' => 'auth'], function () {
+    Route::resource('/books', 'BookController');
+    Route::get('/books/{book}/convert', 'BookController@convert')->name('books.convert');
+    Route::patch('/books/{book}/restore', 'BookController@restore')->name('books.restore');
+    Route::post('/books/{book}/send', 'BookController@send')->name('books.send');
+
+    Route::resource('/collections', 'CollectionController');
+    Route::resource('/devices', 'DeviceController')->except(['show']);
+    Route::resource('/users', 'UserController');
+    Route::get('/profile', 'ProfileController@edit')->name('profile.edit');
+    Route::patch('/profile', 'ProfileController@update')->name('profile.update');
+
+    Route::get('/jobs', 'JobController@index')->name('jobs.index');
+});
+
 

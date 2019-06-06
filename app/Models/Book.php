@@ -13,11 +13,11 @@ class Book extends Model
     protected $casts = [
         'formats' => 'array',
         'cover' => 'boolean',
-        'pubdate' => 'datetime:Y-m-d H:i:s'
+        'date' => 'datetime:Y-m-d H:i:s'
     ];
 
     public function collections()
     {
-        return $this->belongsToMany('App\Model\Collection', 'items_collection', 'book_id', 'collection_id');
+        return $this->belongsToMany('App\Models\Collection', 'items_collection', 'book_id', 'collection_id');
     }
 }

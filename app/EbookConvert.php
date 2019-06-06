@@ -15,14 +15,16 @@ class EbookConvert
         if(!in_array($source, self::$supportTypes) || !in_array($target, self::$supportTypes))
             throw new \Exception('Ext not support');
 
-        $source_path = storage_path('app/ebooks')."/$id.$source";
+        $path = storage_path('app/ebooks');
+        $source_path = $path."/$id.$source";
 
         if(!is_file($source_path))
             throw new FileNotFoundException($source_path);
 
-        $target_path = storage_path('app/ebooks')."/$id.$target";
+        $target_path = $path."/$id.$target";
 
         $process = Process::fromShellCommandline("ebook-convert $source_path $target_path --output-profile=$profile");
+        $process->setTimeout(60 * 10);
         $process->run();
 
         if(!$process->isSuccessful())

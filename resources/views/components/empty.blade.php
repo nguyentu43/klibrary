@@ -1,0 +1,1 @@
+<div class="col-12">@lang('app.empty')</div>

@@ -2,19 +2,35 @@
 
 @section('main')
 <div class="container">
-    <div class="row justify-content-center">
-        <div class="col-md-8">
+    <div class="row">
+        <div class="col-md-3">
             <div class="card">
-                <div class="card-header">Dashboard</div>
-
                 <div class="card-body">
-                    @if (session('status'))
-                        <div class="alert alert-success" role="alert">
-                            {{ session('status') }}
-                        </div>
-                    @endif
-
-                    You are logged in!
+                    <p class="card-text">{{ $counts['books'] }} @lang('app.book.plural')</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card">
+                <div class="card-body">
+                    <p class="card-text">{{ $counts['collections'] }} @lang('app.collection.plural')</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card">
+                <div class="card-body">
+                    <p class="card-text">{{ $counts['devices'] }} @lang('app.device.plural')</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-12 my-2">
+            <h2>@lang('app.book.lastest') ({{ count($books) }})</h2>
+        </div>
+        <div class="col-md-12">
+            <div class="container-fluid">
+                <div class="row">
+                    @each("components.book", $books, 'book', 'components.empty')
                 </div>
             </div>
         </div>

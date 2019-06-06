@@ -15,8 +15,8 @@ class EbookMeta
         'Tags' => 'tags',
         'Identifiers' => 'identifier',
         'Publisher' => 'publisher',
-        'Languages' => 'languages',
-        'Published' => 'pubdate'
+        'Languages' => 'language',
+        'Published' => 'date'
     ];
 
     public static function read($path, $id)
@@ -59,13 +59,13 @@ class EbookMeta
 
         foreach($data as $key => $value)
         {
-            if(!$value) continue;
-            $cmd .= " --$key=$value";
+            if(!is_string($value) || !in_array($key, array_values(self::$ebookProps))) continue;
+            $cmd .= " --$key='$value'";
         }
 
         $path_cover = storage_path("app/public/{$data['id']}.jpg");
         if(is_file($path_cover))
-            $cmd .= " --cover=$path_cover";
+            $cmd .= " --cover='$path_cover'";
 
         $process = Process::fromShellCommandline($cmd);
         $process->run();

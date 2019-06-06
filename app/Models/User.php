@@ -56,6 +56,6 @@ class User extends Authenticatable
 
     public function collections()
     {
-        return $this->hasMany('App\Models', 'user_id', 'id');
+        return $this->hasMany('App\Models\Collection', 'user_id', 'id');
     }
 }

@@ -9,6 +9,9 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Mail;
+use App\Jobs\{ ConvertFormat, SendToKindle };
 
 class BookController extends Controller
 {
@@ -17,10 +20,17 @@ class BookController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        $books = Auth::user()->books()->paginate(10);
-        return view('books.index', compact('books'));
+        if($request->get('show') === 'trashed')
+        {
+            $books = Auth::user()->books()->onlyTrashed()->paginate(1);
+            $show = $request->get('show');
+        }
+        else {
+            $books = Auth::user()->books()->paginate(10);
+        }
+        return view('books.index', compact('books', 'show'));
     }
 
     /**
@@ -52,14 +62,14 @@ class BookController extends Controller
         $bookPath = storage_path('app/ebooks')."/".$filename;
         $ebookFile->storeAs('ebooks', $filename);
         $data = EbookMeta::read($bookPath, $book->id);
-        if(array_key_exists('pubdate', $data))
-            $data['pubdate'] = Carbon::createFromFormat('Y-m-d\TH:i:sP', $data['pubdate'])->format('Y-m-d H:i:s');
+        if(array_key_exists('date', $data))
+            $data['date'] = Carbon::createFromFormat('Y-m-d\TH:i:sP', $data['date'])->format('Y-m-d H:i:s');
         if(array_key_exists('comments', $data))
             $data['comments'] = utf8_decode($data['comments']);
         $book->fill($data);
         $book->save();
 
-        return redirect()->route('books.index');
+        return redirect()->route('books.index')->with('message', __('app.book.messages.add', ['book' => $book->title]));
     }
 
     /**
@@ -70,9 +80,21 @@ class BookController extends Controller
      */
     public function show(Request $request, Book $book)
     {
-        if($request->get('download'))
+        if($request->filled('download'))
         {
             return Storage::download('ebooks/'.$book->id.'.'.$request->get('download'), $book->title.'.'.$request->get('download'));
+        }
+        else if($request->filled('delete'))
+        {
+            $format = $request->get('delete');
+            if($book->format[0] !== $format)
+            {
+                Storage::delete(['ebooks/'.$book->id.'.'.$format]);
+                $book->formats = array_filter($book->formats, function($item) use($format){
+                    return $item !== $format;
+                });
+                $book->save();
+            }   
         }
         return view('books.show', compact('book'));
     }
@@ -85,7 +107,7 @@ class BookController extends Controller
      */
     public function edit(Book $book)
     {
-        //
+        return view('books.edit', compact('book'));
     }
 
     /**
@@ -97,7 +119,25 @@ class BookController extends Controller
      */
     public function update(Request $request, Book $book)
     {
-        //
+        $request->validate([
+            'cover' => 'nullable|max:1024|mimes:jpg',
+            'title' => 'required'
+        ]);
+
+        if($request->cover)
+        {
+            $request->cover->storeAs('public/covers', $book->id.".jpg");
+            $book->cover = true;
+        }
+        $data = $request->input();
+        unset($data['cover']);
+
+        foreach($book->formats as $format)
+        {
+            EbookMeta::write(storage_path('app/ebooks/'.$book->id.'.'.$format), $book->toArray());
+        }
+        if($book->update($data))
+            return redirect()->route('books.show', ['book' => $book ])->with('message', __('app.book.messages.update', ['book' => $book->title ]));
     }
 
     /**
@@ -106,8 +146,48 @@ class BookController extends Controller
      * @param  \App\Models\Book  $book
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Book $book)
+    public function destroy(Request $request, $id)
     {
-        //
+        $book = Book::withTrashed()->findOrFail($id);
+        if($book->trashed())
+        {
+            if($book->forceDelete())
+                return redirect()->route('books.index')->with('message',  __('app.book.messages.delete', ['book' => $book->title ]));
+        }
+        else {
+            if($book->delete())
+                return redirect()->route('books.index')->with('message', __('app.book.messages.trash', ['book' => $book->title ]));
+        }
+    }
+
+    public function restore(Request $request, $id)
+    {
+        $book = Book::onlyTrashed()->findOrFail($id);
+        $book->restore();
+        return redirect()->route('books.index')->with('message',  __('app.book.messages.restore', ['book' => $book->title ]));
+    }
+
+    public function convert(Request $request, Book $book)
+    {
+        if($request->has('format'))
+        {
+            ConvertFormat::dispatch($book, $request->get('format'));
+            return redirect()->route('books.show', ['book' => $book])->with('message', __('app.book.messages.convert'));
+        }
+        return redirect()->route('books.show', ['book' => $book])->with('formatConvertError', __('app.book.error.convert', [ 'formats' => implode(', ', EbookConvert::$supportTypes)]));
+    }
+
+    public function send(Request $request, Book $book)
+    {
+
+        $request->validate([
+            'email_to' => 'required|email',
+            'email_from' => 'required|email',
+            'format' => 'required|in:'.implode(',', EbookConvert::$supportTypes)
+        ]);
+
+        SendToKindle::dispatch($book, $request->only(['email_to', 'email_from', 'format']));
+
+        return redirect()->route('books.show', compact('book'))->with('message', __('app.book.sent'));
     }
 }

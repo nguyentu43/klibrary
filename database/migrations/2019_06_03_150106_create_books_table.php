@@ -21,8 +21,8 @@ class CreateBooksTable extends Migration
             $table->string('identifier')->nullable();
             $table->string('tags')->nullable();
             $table->string('publisher')->nullable();
-            $table->string('languages')->nullable();
-            $table->datetime('pubdate')->nullable();
+            $table->string('language')->nullable();
+            $table->datetime('date')->nullable();
             $table->json('formats')->nullable();
             $table->boolean('cover')->default(false);
             $table->unsignedBigInteger('user_id');

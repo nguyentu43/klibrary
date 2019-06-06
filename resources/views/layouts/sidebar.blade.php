@@ -4,31 +4,33 @@
     </li>
     <li class="nav-item">
         <a class="nav-link @route('books') active @endroute d-flex align-items-center justify-content-between" href="{{ route('books.index') }}">
-            <div>{{ __('Books') }}</div>
+            @lang('app.book.plural')
             <button class="btn btn-light btn-sm" data-href="{{ route('books.create') }}">+</button>
         </a>
     </li>
     <li class="nav-item">
         <a class="nav-link @route('collections') active @endroute d-flex align-items-center justify-content-between" href="{{ route('collections.index') }}">
-            {{ __('Collections') }}
+            @lang('app.collection.plural')
             <button class="btn btn-light btn-sm" data-href="{{ route('collections.create') }}">+</button>
         </a>
     </li>
     <li class="nav-item">
         <a class="nav-link @route('devices') active @endroute d-flex align-items-center justify-content-between" href="{{ route('devices.index') }}">
-            {{ __('Devices') }}
+            @lang('app.device.plural')
             <button class="btn btn-light btn-sm" data-href="{{ route('devices.create') }}">+</button>
+        </a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link @route('jobs') active @endroute d-flex align-items-center justify-content-between" href="{{ route('jobs.index') }}">
+            @lang('app.job.plural')
         </a>
     </li>
 @admin
     <li class="nav-item">
         <a class="nav-link @route('users') active @endroute d-flex align-items-center justify-content-between" href="{{ route('users.index') }}">
-            {{ __('Users') }}
+            @lang('app.user.plural')
             <button class="btn btn-light btn-sm" data-href="{{ route('users.create') }}">+</button>
         </a>
     </li>
 @endadmin
 </nav>
-
-<script src="{{ asset('js/sidebar.js') }}" defer>
-</script>

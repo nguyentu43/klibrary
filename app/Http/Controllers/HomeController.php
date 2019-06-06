@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\{ Book, Collection, Device };
 
 class HomeController extends Controller
 {
@@ -23,6 +24,14 @@ class HomeController extends Controller
      */
     public function index()
     {
-        return view('home');
+
+        $counts = [
+            'books' => Book::count(),
+            'collections' => Collection::count(),
+            'devices' => Device::count()
+        ];
+
+        $books = Book::orderBy('created_at', 'desc')->limit(6)->get();
+        return view('home', compact('counts', 'books'));
     }
 }

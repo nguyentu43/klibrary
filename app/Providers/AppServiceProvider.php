@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use App\Models\Book;
 use App\EbookConvert;
+use App\DeviceType;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -63,5 +64,8 @@ class AppServiceProvider extends ServiceProvider
         Validator::replacer('ebooktypes', function ($message, $attribute, $rule, $parameters) {
             return str_replace(':values', implode(', ', EbookConvert::$supportTypes), $message);
         });
+
+        view()->share('supportTypes', EbookConvert::$supportTypes);
+        view()->share('supportDevices', DeviceType::getAllDeviceName());
     }
 }

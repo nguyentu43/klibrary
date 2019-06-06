@@ -3,7 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\Collection;
+use App\Models\Book;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
+use App\Http\Requests\CollectionRequest;
 
 class CollectionController extends Controller
 {
@@ -14,7 +17,8 @@ class CollectionController extends Controller
      */
     public function index()
     {
-        //
+        $collections = Auth::user()->collections()->get();
+        return view('collections.index', compact('collections'));
     }
 
     /**
@@ -24,7 +28,7 @@ class CollectionController extends Controller
      */
     public function create()
     {
-        //
+        return view('collections.create');
     }
 
     /**
@@ -33,9 +37,10 @@ class CollectionController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(CollectionRequest $request)
     {
-        //
+        $collection = Auth::user()->collections()->create($request->validated());
+        return redirect()->route('collections.index')->with('message', __('app.collection.messages.add', ['collection' => $collection->name]));
     }
 
     /**
@@ -46,7 +51,8 @@ class CollectionController extends Controller
      */
     public function show(Collection $collection)
     {
-        //
+        $collection->load('books');
+        return view('collections.show', compact('collection'));
     }
 
     /**
@@ -57,7 +63,8 @@ class CollectionController extends Controller
      */
     public function edit(Collection $collection)
     {
-        //
+        $books = Book::all();
+        return view('collections.edit', compact('collection', 'books'));
     }
 
     /**
@@ -67,9 +74,20 @@ class CollectionController extends Controller
      * @param  \App\Models\Collection  $collection
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Collection $collection)
+    public function update(CollectionRequest $request, Collection $collection)
     {
-        //
+        $data = $request->all();
+        if(!empty($data['books']))
+        {
+            $collection->books()->sync($data['books']);
+            unset($data['books']);
+        }
+        else {
+            $collection->books()->detach();
+        }
+        
+        if($collection->update($data))
+            return redirect()->route('collections.index')->with('message', __('app.collection.messages.update', ['collection' => $collection->name]));
     }
 
     /**
@@ -80,6 +98,7 @@ class CollectionController extends Controller
      */
     public function destroy(Collection $collection)
     {
-        //
+        if($collection->delete())
+            return redirect()->route('collections.index')->with('message', __('app.collection.messages.delete', ['collection' => $collection->name]));;
     }
 }

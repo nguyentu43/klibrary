@@ -8,6 +8,11 @@
         </div>
 
         <div class="col">
+            @if(session('message'))
+                <div class="alert alert-primary mx-3" role="alert">
+                    {{ session('message') }}
+                </div>
+            @endif    
             @yield("main")
         </div>
     </div>
