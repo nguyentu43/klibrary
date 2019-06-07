@@ -1,3 +1,12 @@
 body{
     background: #eee;
 }
+
+.dropdown #sidebar .nav-link{
+    padding-left: 15px !important;
+    padding-right: 15px !important;
+}
+
+.dropdown #sidebar .nav-link.active{
+    color: white;
+}

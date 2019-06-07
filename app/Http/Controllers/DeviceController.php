@@ -50,6 +50,7 @@ class DeviceController extends Controller
      */
     public function edit(Device $device)
     {
+        $this->authorize('view', $device);
         return view('devices.edit', compact('device'));
     }
 
@@ -62,6 +63,7 @@ class DeviceController extends Controller
      */
     public function update(DeviceRequest $request, Device $device)
     {
+        $this->authorize('update', $device);
         $data = $request->all();
         if(!empty($data['default']))
         {
@@ -84,6 +86,7 @@ class DeviceController extends Controller
      */
     public function destroy(Device $device)
     {
+        $this->authorize('delete', $device);
         if($device->delete())
             return redirect()->route('devices.index')->with('message', __('app.device.messages.delete', ['device' => $device->name]));
     }

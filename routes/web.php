@@ -27,7 +27,7 @@ Route::group(['middleware' => 'auth'], function () {
 
     Route::resource('/collections', 'CollectionController');
     Route::resource('/devices', 'DeviceController')->except(['show']);
-    Route::resource('/users', 'UserController');
+    Route::resource('/users', 'UserController')->middleware('can:index, App\Models\User');
     Route::get('/profile', 'ProfileController@edit')->name('profile.edit');
     Route::patch('/profile', 'ProfileController@update')->name('profile.update');
 

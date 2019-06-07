@@ -1,4 +1,4 @@
-<div class="col-6 col-md-4">
+<div class="col-12 col-sm-6 mb-1">
     <div class="card">
         <div class="card-body">
             <div class="row">
@@ -15,11 +15,11 @@
             </div>
         </div>
         <div class="card-footer">
-            <a href="{{ route('devices.edit', compact('device')) }}" class="mr-1 btn btn-success">@lang('app.device.edit')</a>
+            <a href="{{ route('devices.edit', compact('device')) }}" class="mr-1 btn btn-success mb-1">@lang('app.device.edit')</a>
             <form method="post" class="d-inline" action="{{ route('devices.destroy', compact('device')) }}">
                 @csrf
                 @method('DELETE')
-                <button class="btn btn-danger btnDelete" type="submit">@lang('app.device.delete')</button>
+                <button class="btn btn-danger btnDelete mb-1" type="submit">@lang('app.device.delete')</button>
             </form>
         </div>
     </div>

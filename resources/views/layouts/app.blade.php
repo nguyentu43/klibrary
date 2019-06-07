@@ -22,7 +22,7 @@
 <body>
     <div id="app">
         <nav class="navbar navbar-expand-md navbar-light bg-white shadow-sm">
-            <div class="container">
+            <div class="container-fluid">
                 <a class="navbar-brand" href="{{ url('/') }}">
                     {{ config('app.name', 'Laravel') }}
                 </a>
@@ -33,7 +33,7 @@
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <!-- Left Side Of Navbar -->
                     <ul class="navbar-nav mr-auto">
-
+                        
                     </ul>
 
                     <!-- Right Side Of Navbar -->
@@ -49,8 +49,18 @@
                                 </li>
                             @endif
                         @else
+                            <li class="nav-item my-2">
+                                <form method="get" class="form-inline" action="{{ route('home') }}">
+                                    <div class="input-group">
+                                        <input type="text" class="form-control" name="search" placeholder="@lang('app.home.search_placeholder')" value="{{ $search ?? '' }}">
+                                        <div class="input-group-append">
+                                            <button class="btn btn-primary" type="submit">@lang('app.home.search')</button>
+                                        </div> 
+                                    </div>
+                                </form>
+                            </li>
                             <li class="nav-item dropdown">
-                                <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
+                                <a id="navbarDropdown" class="nav-link dropdown-toggle px-3" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
                                     {{ Auth::user()->name }} <span class="caret"></span>
                                 </a>
 
@@ -67,6 +77,10 @@
                                     <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
                                         @csrf
                                     </form>
+                                </div>
+
+                                <div class="d-md-none">
+                                    @include('components.sidebar')
                                 </div>
                             </li>
                         @endguest

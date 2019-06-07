@@ -50,8 +50,9 @@ class UserController extends Controller
         else {
                 $data['is_admin'] = true;
         }
-
-        $user = User::create($request->all());
+        $data = $request->all();
+        $data['password'] = Hash::make($data['password']);
+        $user = User::create($data);
         return redirect()->route('users.index')->with('message', __('app.user.messages.add', ['user' => $user->name]));
     }
 

@@ -3,7 +3,7 @@
 @section("main")
     <div class="container-fluid">
         <div class="row">
-            <div class="col-12">
+            <div class="col-12 table-responsive">
                 <table class="table table-light table-bordered">
                     <thead class="thead-light">
                         <tr>
@@ -22,11 +22,11 @@
                             <td>{{ $user->email }}</td>
                             <td>{{ $user->isAdmin ? 'x' : 'o' }}</td>
                             <td>
-                                <a class="btn btn-success btn-sm" href="{{ route('users.edit', compact('user')) }}" >@lang('app.user.edit')</a>
+                                <a class="btn btn-success btn-sm mb-1" href="{{ route('users.edit', compact('user')) }}" >@lang('app.user.edit')</a>
                                 <form method="post" class="d-inline" action="{{ route('users.destroy', compact('user')) }}">
                                     @csrf
                                     @method("DELETE")
-                                    <button class="btn btn-danger btn-sm btnDelete" href="{{ route('users.destroy', compact('user')) }}">@lang('app.user.delete')</a>
+                                    <button class="btn btn-danger btn-sm btnDelete mb-1" href="{{ route('users.destroy', compact('user')) }}">@lang('app.user.delete')</a>
                                 </form>
                             </td>
                         </tr>

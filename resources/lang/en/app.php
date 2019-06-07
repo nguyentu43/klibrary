@@ -17,7 +17,7 @@ return [
         'tags' => 'Tags',
         'publisher' => 'Publisher',
         'language' => 'Language',
-        'date' => 'Pubdate',
+        'pubdate' => 'Pubdate',
         'cover' => 'Cover',
         'update' => 'Update',
         'show_trash' => 'Show Trashed File Only',
@@ -121,5 +121,10 @@ return [
             'delete' => 'Job :job deleted'
         ]
     ],
-    'empty' => 'Click + to add item'
+    'empty' => 'Click + to add item',
+    'home' => [
+        'search' => 'Search',
+        'search_placeholder' => 'Search book, collection, ...'
+    ],
+    'empty_search' => 'Try search keyword other'
 ];

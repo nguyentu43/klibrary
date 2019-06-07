@@ -3,7 +3,8 @@
 @section("main")
     <div class="container-fluid">
         <div class="row">
-            <div class="col-12">
+            <div class="col-12 table-responsive">
+                <small>Auto refresh 10s</small>
                 <table class="table table-light table-bordered">
                     <thead class="thead-light">
                         <tr>

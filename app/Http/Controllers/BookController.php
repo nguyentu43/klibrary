@@ -22,6 +22,7 @@ class BookController extends Controller
      */
     public function index(Request $request)
     {
+
         if($request->get('show') === 'trashed')
         {
             $books = Auth::user()->books()->onlyTrashed()->paginate(1);
@@ -52,7 +53,7 @@ class BookController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'ebook' => 'required|max:25600|file|ebooktypes'
+            'ebook' => 'required|max:19000|file|ebooktypes'
         ]);
 
         $ebookFile = $request->ebook;
@@ -80,6 +81,8 @@ class BookController extends Controller
      */
     public function show(Request $request, Book $book)
     {
+        $this->authorize('view', $book);
+
         if($request->filled('download'))
         {
             return Storage::download('ebooks/'.$book->id.'.'.$request->get('download'), $book->title.'.'.$request->get('download'));
@@ -107,6 +110,7 @@ class BookController extends Controller
      */
     public function edit(Book $book)
     {
+        $this->authorize('view', $book);
         return view('books.edit', compact('book'));
     }
 
@@ -119,6 +123,8 @@ class BookController extends Controller
      */
     public function update(Request $request, Book $book)
     {
+        $this->authorize('update', $book);
+
         $request->validate([
             'cover' => 'nullable|max:1024|mimes:jpg',
             'title' => 'required'
@@ -148,6 +154,8 @@ class BookController extends Controller
      */
     public function destroy(Request $request, $id)
     {
+        $this->authorize('delete', $book);
+
         $book = Book::withTrashed()->findOrFail($id);
         if($book->trashed())
         {
@@ -162,6 +170,8 @@ class BookController extends Controller
 
     public function restore(Request $request, $id)
     {
+        $this->authorize('delete', $book);
+
         $book = Book::onlyTrashed()->findOrFail($id);
         $book->restore();
         return redirect()->route('books.index')->with('message',  __('app.book.messages.restore', ['book' => $book->title ]));
@@ -169,6 +179,7 @@ class BookController extends Controller
 
     public function convert(Request $request, Book $book)
     {
+        $this->authorize('view', $book);
         if($request->has('format'))
         {
             $device = Auth::user()->devices()->where('default', 1)->first();
@@ -181,7 +192,7 @@ class BookController extends Controller
 
     public function send(Request $request, Book $book)
     {
-
+        $this->authorize('view', $book);
         $request->validate([
             'email_to' => 'required|email',
             'email_from' => 'required|email',

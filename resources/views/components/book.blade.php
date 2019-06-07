@@ -1,4 +1,4 @@
-<div class="col-4 col-sm-3 col-md-2 mb-2">
+<div class="col-6 col-sm-4 col-md-3 col-lg-2 mb-1">
     @if($book->trashed())
         @include('components.cover')
         <div class="d-flex mt-2">

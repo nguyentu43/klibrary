@@ -22,8 +22,7 @@ class JobController extends Controller
                     array_push($jobs, $job);
             }
         }
-
-        return view('job', compact('jobs'));
+        return response()->view('job', compact('jobs'))->header('Refresh', '10');
     }
 
     public function destroy(JobStatus $job)

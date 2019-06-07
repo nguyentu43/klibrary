@@ -51,6 +51,7 @@ class CollectionController extends Controller
      */
     public function show(Collection $collection)
     {
+        $this->authorize('view', $collection);
         $collection->load('books');
         return view('collections.show', compact('collection'));
     }
@@ -63,6 +64,7 @@ class CollectionController extends Controller
      */
     public function edit(Collection $collection)
     {
+        $this->authorize('view', $collection);
         $books = Book::all();
         return view('collections.edit', compact('collection', 'books'));
     }
@@ -76,6 +78,7 @@ class CollectionController extends Controller
      */
     public function update(CollectionRequest $request, Collection $collection)
     {
+        $this->authorize('update', $collection);
         $data = $request->all();
         if(!empty($data['books']))
         {
@@ -98,6 +101,7 @@ class CollectionController extends Controller
      */
     public function destroy(Collection $collection)
     {
+        $this->authorize('delete', $collection);
         if($collection->delete())
             return redirect()->route('collections.index')->with('message', __('app.collection.messages.delete', ['collection' => $collection->name]));;
     }

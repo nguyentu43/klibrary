@@ -4,7 +4,7 @@
 
 <div class="container-fluid">
     <div class="row">
-        <div class="col-3">
+        <div class="col-12 col-md-3 mb-1">
             @include("components.cover")
         </div>
         <div class="col">
@@ -34,8 +34,8 @@
             <form method="post" action="{{ route('books.destroy', compact('book')) }}">
                 @csrf
                 @method("DELETE")
-                <a class="btn btn-success" href="{{ route('books.edit', ['book' => $book]) }}">@lang('app.book.edit')</a>
-                <div class="btn-group">
+                <a class="btn btn-success mb-1" href="{{ route('books.edit', ['book' => $book]) }}">@lang('app.book.edit')</a>
+                <div class="btn-group mb-1">
                     <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         @lang('app.book.convert')
                     </button>
@@ -47,7 +47,7 @@
                         @endforeach
                     </div>
                 </div>
-                <button class="btn btn-danger btnDelete" type="submit">@lang('app.book.delete')</button>
+                <button class="btn mb-1 btn-danger btnDelete" type="submit">@lang('app.book.delete')</button>
             </form>
 
             @if(session('formatConvertError'))
@@ -59,7 +59,7 @@
     </div>
 
     <div class="row mt-2">
-        <div class="col">
+        <div class="col table-responsive">
             <table class="table table-light table-bordered">
                 <thead class="thead-light">
                     <tr>
@@ -84,15 +84,13 @@
                             </td>
                             <td>
                                 @if($size < 19 * 1024 * 1024 && in_array($format, ['docx', 'mobi', 'pdf']))
-                                <button class="btn btn-sm btn-success btnSend" data-format="{{ $format }}" type="button" data-toggle="modal" data-target="#send">-></button>
-                                @else
-                                    x
+                                <button class="btn btn-sm btn-success btnSend" data-format="{{ $format }}" type="button" data-toggle="modal" data-target="#send">@lang('app.book.send')</button>
                                 @endif
                             </td>
-                            <td><a role="button" href="{{ route('books.show', [ 'book' => $book->id ]).'?download='.$format }}" class="btn btn-sm btn-primary">{{ __('Download') }}</a></td>
+                            <td><a role="button" href="{{ route('books.show', [ 'book' => $book->id ]).'?download='.$format }}" class="btn btn-sm btn-primary">@lang('app.book.download')</a></td>
                             <td>
                                 @if($loop->count > 1)
-                                    <button data-href="{{ route('books.show', [ 'book' => $book->id ]).'?delete='.$format }}" class="btn btn-sm btn-warning deleteFormat">{{ __('Delete') }}</button></td>
+                                    <button data-href="{{ route('books.show', [ 'book' => $book->id ]).'?delete='.$format }}" class="btn btn-sm btn-warning deleteFormat">@lang('app.book.delete')</button></td>
                                 @endif
                             </tr>
                     @endforeach
@@ -119,7 +117,7 @@
                             <div class="col-sm-9">
                                 <select id="email_from" class="form-control" name="email_from" required>
                                     @php
-                                        $list = Auth::user()->email_approved_list
+                                        $list = Auth::user()->email_approved_list ?? [];
                                     @endphp
                                     @foreach($list as $email)
                                         <option
