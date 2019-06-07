@@ -20,6 +20,14 @@ class BookController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+
+    public $ebookMeta;
+
+    public function __construct(EbookMeta $ebookMeta)
+    {
+        $this->ebookMeta = $ebookMeta;
+    }
+    
     public function index(Request $request)
     {
 
@@ -55,14 +63,13 @@ class BookController extends Controller
         $request->validate([
             'ebook' => 'required|max:19000|file|ebooktypes'
         ]);
-
         $ebookFile = $request->ebook;
         $book = Auth::user()->books()->create([]);
         $book->formats = [ $ebookFile->getClientOriginalExtension() ];
         $filename = $book->id.".".$ebookFile->getClientOriginalExtension();
         $bookPath = storage_path('app/ebooks')."/".$filename;
         $ebookFile->storeAs('ebooks', $filename);
-        $data = EbookMeta::read($bookPath, $book->id);
+        $data = $this->ebookMeta->read($bookPath, $book->id);
         if(array_key_exists('date', $data))
             $data['date'] = Carbon::createFromFormat('Y-m-d\TH:i:sP', $data['date'])->format('Y-m-d H:i:s');
         if(array_key_exists('comments', $data))
@@ -140,7 +147,7 @@ class BookController extends Controller
 
         foreach($book->formats as $format)
         {
-            EbookMeta::write(storage_path('app/ebooks/'.$book->id.'.'.$format), $book->toArray());
+            $this->ebookMeta->write(storage_path('app/ebooks/'.$book->id.'.'.$format), $book->toArray());
         }
         if($book->update($data))
             return redirect()->route('books.show', ['book' => $book ])->with('message', __('app.book.messages.update', ['book' => $book->title ]));
@@ -198,9 +205,7 @@ class BookController extends Controller
             'email_from' => 'required|email',
             'format' => 'required|in:'.implode(',', EbookConvert::$supportTypes)
         ]);
-
         SendToKindle::dispatch($book, $request->only(['email_to', 'email_from', 'format']));
-
         return redirect()->route('books.show', compact('book'))->with('message', __('app.book.sent'));
     }
 }

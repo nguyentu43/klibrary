@@ -41,10 +41,10 @@ class ConvertFormat implements ShouldQueue
      *
      * @return void
      */
-    public function handle()
+    public function handle(EbookConvert $ebookConvert)
     {
         $book = $this->book;
-        EbookConvert::convert($book->id, $book->formats[0], $this->format, $this->profile);
+        $ebookConvert->convert($book->id, $book->formats[0], $this->format, $this->profile);
         $formats = $book->formats;
         array_push($formats, $this->format);
         $book->formats = $formats;

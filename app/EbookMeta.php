@@ -19,7 +19,7 @@ class EbookMeta
         'Published' => 'date'
     ];
 
-    public static function read($path, $id)
+    public function read($path, $id)
     {
         if(!is_file($path))
             throw new FileNotFoundException($path);
@@ -53,14 +53,16 @@ class EbookMeta
         return $ebookMeta;
     }
 
-    public static function write($path, $data)
+    public function write($path, $data)
     {
         $cmd = "ebook-meta $path";
 
         foreach($data as $key => $value)
         {
-            if(!is_string($value) || !in_array($key, array_values(self::$ebookProps))) continue;
-            $cmd .= " --$key='$value'";
+            if(!in_array($key, array_values(self::$ebookProps))) continue;
+            if(!is_string($value))
+                $value = '';
+            $cmd .= ' --'.$key.'="'.$value.'"';
         }
 
         $path_cover = storage_path("app/public/{$data['id']}.jpg");

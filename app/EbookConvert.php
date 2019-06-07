@@ -10,7 +10,7 @@ class EbookConvert
 {
     public static $supportTypes = [ 'azw', 'azw1', 'azw2', 'azw3', 'azw4', 'epub', 'mobi', 'prc', 'pdf', 'docx', 'rtf' ];
 
-    public static function convert($id, $source, $target, $profile = 'default')
+    public function convert($id, $source, $target, $profile = 'default')
     {
         if(!in_array($source, self::$supportTypes) || !in_array($target, self::$supportTypes))
             throw new \Exception('Ext not support');
