@@ -17,7 +17,6 @@ class BookTest extends TestCase
     public function testExample()
     {
         $response = $this->get('/');
-
         $response->assertStatus(200);
     }
 }
