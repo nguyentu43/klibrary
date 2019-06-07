@@ -40,16 +40,16 @@ class EbookMeta
 
         foreach($output as $prop)
         {
-            $items = explode(": ", $prop);
+            $items = [];
+            $items[] = substr($prop, 0, 20);
+            $items[] = substr($prop, 21);
             $items = array_map(function($item){ return trim($item); }, $items);
-
             if(array_key_exists($items[0], self::$ebookProps))
                 $ebookMeta[self::$ebookProps[$items[0]]] = $items[1];
             else {
                 continue;
             }
         }
-
         return $ebookMeta;
     }
 

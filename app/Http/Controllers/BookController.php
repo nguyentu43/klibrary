@@ -72,8 +72,6 @@ class BookController extends Controller
         $data = $this->ebookMeta->read($bookPath, $book->id);
         if(array_key_exists('date', $data))
             $data['date'] = Carbon::createFromFormat('Y-m-d\TH:i:sP', $data['date'])->format('Y-m-d H:i:s');
-        if(array_key_exists('comments', $data))
-            $data['comments'] = utf8_decode($data['comments']);
         $book->fill($data);
         $book->save();
 
@@ -134,6 +132,7 @@ class BookController extends Controller
 
         $request->validate([
             'cover' => 'nullable|max:1024|mimes:jpg',
+            'date' => 'nullable|date_format:Y-m-d H:i:s',
             'title' => 'required'
         ]);
 
@@ -144,13 +143,14 @@ class BookController extends Controller
         }
         $data = $request->input();
         unset($data['cover']);
-
-        foreach($book->formats as $format)
-        {
-            $this->ebookMeta->write(storage_path('app/ebooks/'.$book->id.'.'.$format), $book->toArray());
-        }
         if($book->update($data))
+        {
+            foreach($book->formats as $format)
+            {
+                $this->ebookMeta->write(storage_path('app/ebooks/'.$book->id.'.'.$format), $book->toArray());
+            }
             return redirect()->route('books.show', ['book' => $book ])->with('message', __('app.book.messages.update', ['book' => $book->title ]));
+        }
     }
 
     /**
@@ -161,9 +161,8 @@ class BookController extends Controller
      */
     public function destroy(Request $request, $id)
     {
-        $this->authorize('delete', $book);
-
         $book = Book::withTrashed()->findOrFail($id);
+        $this->authorize('delete', $book);
         if($book->trashed())
         {
             if($book->forceDelete())
@@ -177,9 +176,8 @@ class BookController extends Controller
 
     public function restore(Request $request, $id)
     {
-        $this->authorize('delete', $book);
-
         $book = Book::onlyTrashed()->findOrFail($id);
+        $this->authorize('delete', $book);
         $book->restore();
         return redirect()->route('books.index')->with('message',  __('app.book.messages.restore', ['book' => $book->title ]));
     }

@@ -11,10 +11,10 @@ class JobController extends Controller
     public function index(){
         if(Auth::user()->isAdmin)
         {
-            $jobs = JobStatus::all();
+            $jobs = JobStatus::orderBy('created_at', 'desc')->get();
         }
         else {
-            $all = JobStatus::all();
+            $all = JobStatus::orderBy('created_at', 'desc')->get();
             $jobs = [];
             foreach($all as $job)
             {

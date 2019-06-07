@@ -17,7 +17,9 @@ $factory->define(Book::class, function (Faker $faker) {
         'publisher' => $faker->company,
         'language' => $faker->languageCode,
         'date' => $faker->date,
-        'user_id' => User::first()->id
+        'user_id' => function(){
+            return User::first()->id;
+        }
     ];
 });
 

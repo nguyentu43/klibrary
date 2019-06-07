@@ -51,7 +51,10 @@
                 <div class="form-group row">
                     <label for="date" class="col-sm-2 col-form-label">@lang('app.book.pubdate')</label>
                     <div class="col-sm-10">
-                        <input type="datetime" name="date" id="date" class="form-control" value="{{ $book->date }}">
+                        <input type="datetime" name="date" id="date" class="form-control @error('date') is-invalid @enderror" value="{{ $book->date }}">
+                        @error('date')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
                     </div>
                 </div>
                 <div class="form-group row">

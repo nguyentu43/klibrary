@@ -38,7 +38,10 @@ class DeviceController extends Controller
      */
     public function store(DeviceRequest $request)
     {
-        $device = Auth::user()->devices()->create($request->all());
+        $data = $request->all();
+        if($request->filled('default'))
+            $data['default'] = true;
+        $device = Auth::user()->devices()->create($data);
         return redirect()->route('devices.index')->with('message', __('app.device.messages.add', ['device' => $device->name]));
     }
 

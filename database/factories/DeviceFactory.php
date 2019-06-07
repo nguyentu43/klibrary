@@ -12,6 +12,8 @@ $factory->define(Device::class, function (Faker $faker) {
         'name' => $faker->name,
         'type' => DeviceType::KINDLE_PAPERWHITE,
         'email' => $faker->username.'@kindle.com',
-        'user_id' => User::first()->id
+        'user_id' => function(){
+            return User::first()->id;
+        }
     ];
 });
