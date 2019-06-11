@@ -26,3 +26,7 @@ $factory->define(User::class, function (Faker $faker) {
         'email_approved_list' => json_encode([ $faker->email ])
     ];
 });
+
+$factory->state(User::class, 'admin', [
+    'is_admin' => true
+]);

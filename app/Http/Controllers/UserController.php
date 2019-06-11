@@ -105,6 +105,7 @@ class UserController extends Controller
         
         if($user->update($data))
             return redirect()->route('users.index')->with('message', __('app.user.messages.update', ['user' => $user->name]));
+        return abort(403);
     }
 
     /**
@@ -119,5 +120,6 @@ class UserController extends Controller
             return abort(401);
         if($user->delete())
             return redirect()->route('users.index')->with('message', __('app.user.messages.delete', ['user' => $user->name]));
+        return abort(403);
     }
 }

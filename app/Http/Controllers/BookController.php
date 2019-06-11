@@ -26,6 +26,10 @@ class BookController extends Controller
     public function __construct(EbookMeta $ebookMeta)
     {
         $this->ebookMeta = $ebookMeta;
+        $this->middleware('can:view,book')->only('show', 'edit', 'send', 'convert');
+        $this->middleware('can:update,book')->only('update');
+        $this->middleware('can:delete,book')->only('destroy');
+        $this->middleware('can:restore,book')->only('restore');
     }
     
     public function index(Request $request)
@@ -67,15 +71,14 @@ class BookController extends Controller
         $book = Auth::user()->books()->create([]);
         $book->formats = [ $ebookFile->getClientOriginalExtension() ];
         $filename = $book->id.".".$ebookFile->getClientOriginalExtension();
-        $bookPath = storage_path('app/ebooks')."/".$filename;
+        $bookPath = storage_path( 'app/ebooks' ) . "/" . $filename;
         $ebookFile->storeAs('ebooks', $filename);
         $data = $this->ebookMeta->read($bookPath, $book->id);
         if(array_key_exists('date', $data))
-            $data['date'] = Carbon::createFromFormat('Y-m-d\TH:i:sP', $data['date'])->format('Y-m-d H:i:s');
-        $book->fill($data);
-        $book->save();
-
-        return redirect()->route('books.index')->with('message', __('app.book.messages.add', ['book' => $book->title]));
+            $data['date'] = Carbon::createFromFormat('Y-m-d\TH:i:s', substr($data['date'], 0, 19))->format('Y-m-d H:i:s');
+        if($book->update($data))
+            return redirect()->route('books.index')->with('message', __('app.book.messages.add', ['book' => $book->title]));
+        return abort(403);
     }
 
     /**
@@ -86,8 +89,6 @@ class BookController extends Controller
      */
     public function show(Request $request, Book $book)
     {
-        $this->authorize('view', $book);
-
         if($request->filled('download'))
         {
             return Storage::download('ebooks/'.$book->id.'.'.$request->get('download'), $book->title.'.'.$request->get('download'));
@@ -115,7 +116,6 @@ class BookController extends Controller
      */
     public function edit(Book $book)
     {
-        $this->authorize('view', $book);
         return view('books.edit', compact('book'));
     }
 
@@ -128,8 +128,6 @@ class BookController extends Controller
      */
     public function update(Request $request, Book $book)
     {
-        $this->authorize('update', $book);
-
         $request->validate([
             'cover' => 'nullable|max:1024|mimes:jpg',
             'date' => 'nullable|date_format:Y-m-d H:i:s',
@@ -151,6 +149,7 @@ class BookController extends Controller
             }
             return redirect()->route('books.show', ['book' => $book ])->with('message', __('app.book.messages.update', ['book' => $book->title ]));
         }
+        return abort(403);
     }
 
     /**
@@ -161,30 +160,29 @@ class BookController extends Controller
      */
     public function destroy(Request $request, $id)
     {
-        $book = Book::withTrashed()->findOrFail($id);
-        $this->authorize('delete', $book);
+        $book = Book::onlyTrashed()->findOrFail($id);
         if($book->trashed())
         {
             if($book->forceDelete())
                 return redirect()->route('books.index')->with('message',  __('app.book.messages.delete', ['book' => $book->title ]));
+            return abort(403);
         }
         else {
             if($book->delete())
                 return redirect()->route('books.index')->with('message', __('app.book.messages.trash', ['book' => $book->title ]));
+            return abort(403);
         }
     }
 
     public function restore(Request $request, $id)
     {
         $book = Book::onlyTrashed()->findOrFail($id);
-        $this->authorize('delete', $book);
         $book->restore();
         return redirect()->route('books.index')->with('message',  __('app.book.messages.restore', ['book' => $book->title ]));
     }
 
     public function convert(Request $request, Book $book)
     {
-        $this->authorize('view', $book);
         if($request->has('format'))
         {
             $device = Auth::user()->devices()->where('default', 1)->first();
@@ -197,7 +195,6 @@ class BookController extends Controller
 
     public function send(Request $request, Book $book)
     {
-        $this->authorize('view', $book);
         $request->validate([
             'email_to' => 'required|email',
             'email_from' => 'required|email',

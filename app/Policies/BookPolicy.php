@@ -85,6 +85,6 @@ class BookPolicy
      */
     public function forceDelete(User $user, Book $book)
     {
-        return $user->id === $book->user_id;
+        //
     }
 }

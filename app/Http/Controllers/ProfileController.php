@@ -57,5 +57,6 @@ class ProfileController extends Controller
 
         if($user->update($data))
             return redirect()->route('home')->with('message', __('app.user.messages.update', ['user' => $user->name]));
+        return abort(403);
     }
 }

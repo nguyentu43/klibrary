@@ -22,10 +22,3 @@ $factory->define(Book::class, function (Faker $faker) {
         }
     ];
 });
-
-$factory->afterCreating(Book::class, function($book, $faker){
-    $id = $book->id;
-    Storage::put("ebooks/$id.docx", 'DEMO');
-    $book->formats = [ [ 'type' => 'docx', 'size' => 4 ] ];
-    $book->save();
-});

@@ -1,2 +1,4 @@
 *
 !.gitignore
+!no_cover.jpg
+*!testing/

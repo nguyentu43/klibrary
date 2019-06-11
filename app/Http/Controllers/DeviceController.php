@@ -9,6 +9,11 @@ use App\Http\Requests\DeviceRequest;
 
 class DeviceController extends Controller
 {
+    public function __construct(){
+        $this->middleware('can:view,device')->only('show', 'edit');
+        $this->middleware('can:update,device')->only('update');
+        $this->middleware('can:delete,device')->only('destroy');
+    }
     /**
      * Display a listing of the resource.
      *
@@ -53,7 +58,6 @@ class DeviceController extends Controller
      */
     public function edit(Device $device)
     {
-        $this->authorize('view', $device);
         return view('devices.edit', compact('device'));
     }
 
@@ -66,7 +70,6 @@ class DeviceController extends Controller
      */
     public function update(DeviceRequest $request, Device $device)
     {
-        $this->authorize('update', $device);
         $data = $request->all();
         if(!empty($data['default']))
         {
@@ -79,6 +82,7 @@ class DeviceController extends Controller
 
         if($device->update($data))
             return redirect()->route('devices.index', compact('device'))->with('message', __('app.device.messages.update', ['device' => $device->name]));
+        return abort(403);
     }
 
     /**
@@ -89,8 +93,8 @@ class DeviceController extends Controller
      */
     public function destroy(Device $device)
     {
-        $this->authorize('delete', $device);
         if($device->delete())
             return redirect()->route('devices.index')->with('message', __('app.device.messages.delete', ['device' => $device->name]));
+        return abort(403);
     }
 }

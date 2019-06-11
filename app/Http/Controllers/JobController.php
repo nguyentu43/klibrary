@@ -32,5 +32,6 @@ class JobController extends Controller
             return abort(401);
         if($job->delete())
             return redirect()->route('jobs.index')->with('message', __('app.job.messages.delete', ['job' => $job->input[0]]));
+        return abort(403);
     }
 }
