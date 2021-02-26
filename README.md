@@ -1,2 +1,2 @@
 # KLibrary
-This project is used to manage and send ebook to Kindle
+This project is used to managing and sending ebook to Kindle
