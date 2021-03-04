@@ -35,6 +35,7 @@ class BookController extends Controller
     public function index(Request $request)
     {
 
+        $show = null;
         if($request->get('show') === 'trashed')
         {
             $books = Auth::user()->books()->onlyTrashed()->paginate(1);

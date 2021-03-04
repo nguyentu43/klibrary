@@ -24,10 +24,7 @@ class EbookMeta
         if(!is_file($path))
             throw new FileNotFoundException($path);
 
-        if(env('APP_ENV') === 'testing')
-            $cover = storage_path("app/public/covers/$id.jpg");
-        else
-            $cover = storage_path("app/public/covers/testing/$id.jpg");
+        $cover = storage_path("app/public/covers/$id.jpg");
         $process = Process::fromShellCommandline("ebook-meta $path --get-cover=$cover");
         $process->run();
 

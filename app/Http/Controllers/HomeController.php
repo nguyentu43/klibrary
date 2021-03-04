@@ -33,6 +33,9 @@ class HomeController extends Controller
         ];
 
         $lastestBooks = $user->books()->orderBy('created_at', 'desc')->limit(6)->get();
+        $books = null;
+        $collections = null;
+        $search = null;
 
         if(!empty($request->get('search')))
         {
