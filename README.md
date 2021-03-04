@@ -9,4 +9,4 @@ This project is used to managing and sending ebook to Kindle
 * php artisan db:seed
 * php artisan storage:link
 
-![OV](https://github.com/nguyentu43/klibrary/raw/master/screenshot01.png)
+![OV](https://github.com/nguyentu43/klibrary/raw/master/screenshot.png)
