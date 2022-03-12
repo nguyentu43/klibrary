@@ -54,7 +54,6 @@ class AppServiceProvider extends ServiceProvider
                         array_push($files, 'ebooks/'.$book->id.'.'.$format);
                     }
                 }
-                
                 Storage::delete($files);
             }
         });

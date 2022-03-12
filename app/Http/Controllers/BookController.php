@@ -28,8 +28,6 @@ class BookController extends Controller
         $this->ebookMeta = $ebookMeta;
         $this->middleware('can:view,book')->only('show', 'edit', 'send', 'convert');
         $this->middleware('can:update,book')->only('update');
-        $this->middleware('can:delete,book')->only('destroy');
-        $this->middleware('can:restore,book')->only('restore');
     }
     
     public function index(Request $request)
@@ -66,7 +64,7 @@ class BookController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'ebook' => 'required|max:19000|file|ebooktypes'
+            'ebook' => 'required|max:20480|file|ebooktypes'
         ]);
         $ebookFile = $request->ebook;
         $book = Auth::user()->books()->create([]);
@@ -161,7 +159,8 @@ class BookController extends Controller
      */
     public function destroy(Request $request, $id)
     {
-        $book = Book::onlyTrashed()->findOrFail($id);
+        $book = Book::withTrashed()->findOrFail($id);
+        $this->authorize('delete', [Auth::user(), $book]);
         if($book->trashed())
         {
             if($book->forceDelete())
@@ -178,6 +177,7 @@ class BookController extends Controller
     public function restore(Request $request, $id)
     {
         $book = Book::onlyTrashed()->findOrFail($id);
+        $this->authorize('restore', [Auth::user(), $book]);
         $book->restore();
         return redirect()->route('books.index')->with('message',  __('app.book.messages.restore', ['book' => $book->title ]));
     }

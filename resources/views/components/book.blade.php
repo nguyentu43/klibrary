@@ -5,12 +5,12 @@
             <form method="post" action="{{ route('books.restore', compact('book')) }}">
                 @csrf
                 @method('PATCH')
-                <button class="btn btn-primary mr-1" type="submit">Restore</button>
+                <button class="btn btn-primary mr-1 btn-sm" type="submit">Restore</button>
             </form>
             <form method="post" action="{{ route('books.destroy', compact('book')) }}">
                 @csrf
                 @method('DELETE')
-                <button class="btn btn-danger btnDelete" type="submit">Delete</button>
+                <button class="btn btn-danger btnDelete btn-sm" type="submit">Delete</button>
             </form>
             
         </div>

@@ -34,9 +34,9 @@
             <form method="post" action="{{ route('books.destroy', compact('book')) }}">
                 @csrf
                 @method("DELETE")
-                <a class="btn btn-success mb-1" href="{{ route('books.edit', ['book' => $book]) }}">@lang('app.book.edit')</a>
+                <a class="btn btn-success mb-1 btn-sm" href="{{ route('books.edit', ['book' => $book]) }}">@lang('app.book.edit')</a>
                 <div class="btn-group mb-1">
-                    <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <button type="button" class="btn btn-primary dropdown-toggle btn-sm" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         @lang('app.book.convert')
                     </button>
                     <div class="dropdown-menu">
@@ -47,7 +47,7 @@
                         @endforeach
                     </div>
                 </div>
-                <button class="btn mb-1 btn-danger btnDelete" type="submit">@lang('app.book.delete')</button>
+                <button class="btn mb-1 btn-danger btnDelete btn-sm" type="submit">@lang('app.book.delete')</button>
             </form>
 
             @if(session('formatConvertError'))

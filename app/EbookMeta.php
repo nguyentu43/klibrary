@@ -25,7 +25,7 @@ class EbookMeta
             throw new FileNotFoundException($path);
 
         $cover = storage_path("app/public/covers/$id.jpg");
-        $process = Process::fromShellCommandline("ebook-meta $path --get-cover=$cover");
+        $process = Process::fromShellCommandline("ebook-meta '$path' --get-cover='$cover'");
         $process->run();
 
         if(!$process->isSuccessful())
@@ -55,7 +55,7 @@ class EbookMeta
 
     public function write($path, $data)
     {
-        $cmd = "ebook-meta $path";
+        $cmd = "ebook-meta '$path'";
 
         foreach($data as $key => $value)
         {
