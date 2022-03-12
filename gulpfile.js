@@ -1,6 +1,5 @@
 const { src, dest, parallel, watch } = require("gulp");
 const concat = require("gulp-concat");
-const uglify = require("gulp-uglify");
 const plumber = require("gulp-plumber");
 const browsersync = require("browser-sync").create();
 

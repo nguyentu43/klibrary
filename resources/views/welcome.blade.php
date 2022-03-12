@@ -84,9 +84,9 @@
                 <h3 style="text-transform: uppercase;">Manager</h3>
 
                 <div class="links">
-                    <a href="#">Books</a>
-                    <a href="#">Collections</a>
-                    <a href="#">Devices</a>
+                    <a href="{{ route('books.index') }}">Books</a>
+                    <a href="{{ route('collections.index') }}">Collections</a>
+                    <a href="{{ route('devices.index') }}">Devices</a>
                 </div>
             </div>
         </div>

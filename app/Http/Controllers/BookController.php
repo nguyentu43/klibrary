@@ -88,16 +88,22 @@ class BookController extends Controller
      */
     public function show(Request $request, Book $book)
     {
+        $ebookPath = 'ebooks/'.$book->id;
+
+        if(!$this->checkFilesExist($book)){
+            return abort(404);
+        }
+
         if($request->filled('download'))
         {
-            return Storage::download('ebooks/'.$book->id.'.'.$request->get('download'), $book->title.'.'.$request->get('download'));
+            return Storage::download($ebookPath.'.'.$request->get('download'), $book->title.'.'.$request->get('download'));
         }
         else if($request->filled('delete'))
         {
             $format = $request->get('delete');
             if($book->format[0] !== $format)
             {
-                Storage::delete(['ebooks/'.$book->id.'.'.$format]);
+                Storage::delete([$ebookPath.'.'.$format]);
                 $book->formats = array_filter($book->formats, function($item) use($format){
                     return $item !== $format;
                 });
@@ -127,6 +133,10 @@ class BookController extends Controller
      */
     public function update(Request $request, Book $book)
     {
+        if(!$this->checkFilesExist($book)){
+            return abort(404);
+        }
+        
         $request->validate([
             'cover' => 'nullable|max:1024|mimes:jpg',
             'date' => 'nullable|date_format:Y-m-d H:i:s',
@@ -203,5 +213,17 @@ class BookController extends Controller
         ]);
         SendToKindle::dispatch($book, $request->only(['email_to', 'email_from', 'format']));
         return redirect()->route('books.show', compact('book'))->with('message', __('app.book.sent'));
+    }
+
+    private function checkFilesExist(Book $book){
+        $ebookPath = 'ebooks/'.$book->id;
+        
+        foreach($book->formats as $format){
+            if(!Storage::exists($ebookPath . '.' .$format)){
+                return false;
+            }
+        }
+
+        return true;
     }
 }

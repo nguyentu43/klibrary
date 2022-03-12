@@ -3,12 +3,9 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Support\Facades\Blade;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Route;
-use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\{ Schema, 
+    Blade, URL, Auth, 
+    Route, Storage, Validator};
 use App\Models\Book;
 use App\EbookConvert;
 use App\DeviceType;
@@ -34,6 +31,10 @@ class AppServiceProvider extends ServiceProvider
     public function boot()
     {
         Schema::defaultStringLength(191);
+        
+        if( $this->app->environment() != 'local'){
+            URL::forceScheme('https');
+        }
 
         Blade::if('admin', function(){
             return Auth::check() && Auth::user()->isAdmin;

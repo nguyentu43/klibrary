@@ -29,7 +29,7 @@
                 <li><strong>@lang('app.book.language'):</strong> {{ $book->language ?? __('app.book.empty') }}</li>
                 <li><strong>@lang('app.book.identifier'):</strong> {{ $book->identifier ?? __('app.book.empty')  }}</li>
                 <li><strong>@lang('app.book.tags'):</strong> {{ $book->tags ?? __('app.book.empty') }}</li>
-                <li><strong>@lang('app.book.comments'):</strong> {{ $book->comments ?? __('app.book.empty') }}</li>
+                <li><strong>@lang('app.book.comments'):</strong> {{ $book->comments ? strip_tags($book->comments) : __('app.book.empty') }}</li>
             </ul>
             <form method="post" action="{{ route('books.destroy', compact('book')) }}">
                 @csrf

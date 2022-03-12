@@ -2,6 +2,8 @@
 This project is used to managing and sending ebook to Kindle
 * Use Calibre to convert format.
 
+[Try it](https://guarded-woodland-15107.herokuapp.com/)
+
 ## How to install
 * Rename .env.example to .env
 * php artisan key:generate

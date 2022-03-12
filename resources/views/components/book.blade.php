@@ -18,5 +18,10 @@
         <a href="{{ route('books.show', ['book' => $book->id]) }}">
             @include('components.cover')
         </a>
+        <form method="post" action="{{ route('books.destroy', compact('book')) }}">
+            @csrf
+            @method('DELETE')
+            <button class="btn btn-danger btnDelete btn-sm" type="submit">Delete</button>
+        </form>
     @endif
 </div>
