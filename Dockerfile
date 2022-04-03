@@ -22,6 +22,8 @@ RUN chmod -R 777 .
 
 RUN apk update && apk add php php-pdo_pgsql php-session php-pdo php-fileinfo php-xmlwriter php-xml php-tokenizer php-dom php-zip php-json php-phar php-openssl php-mbstring git
 
+RUN wget https://getcomposer.org/download/2.3.3/composer.phar
+
 RUN php composer.phar install
 
 RUN php artisan storage:link
